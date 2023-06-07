@@ -1,24 +1,27 @@
 # iiserlogin.sh
 
-Shell script to login to IISER Captive Portal.
+Shell script to log in to IISER Captive Portal.
 
 # Configuration
 
 Set username and password variables in the script, i.e., replace `iiser.login`
-with your actual username and `wxyz1234` with your actual password. Then, just
+with your actual username and `wxyz1234` with your actual password. Then just
 execute the script. You can also bind the script to some keybinding.
 
 # Technical Point (no one needs to worry about)
 
 Though currently the IISER Captive Portal doesn't require to send live status,
 it can in principle do so. In that case, the program will keep on running in
-the background. For that, it is ideal to run the script through a systemd
-service and just restart the service when it is required to relogin.
+the background. Hence it is ideal to run the script through a
+[systemd service](https://wiki.archlinux.org/title/Systemd#Writing_unit_files)
+and just restart the service whenever logging in is required.
 
 # Cute Trick
 
-You can setup NetworkManager dispatcher to automatically launch the script when
-you connect to IISER network (see the section below).
+You can setup
+[NetworkManager dispatcher](https://wiki.archlinux.org/title/NetworkManager#Network_services_with_NetworkManager_dispatcher)
+to automatically launch the script after connecting to IISER network (see the
+section below).
 
 # My Setup
 
