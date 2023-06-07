@@ -27,6 +27,9 @@ section below).
 
 ## Systemd service
 
+`/etc/systemd/system/iiserlogin.service`
+
+
 ```
 [Unit]
 Description=IISER Captive Portal Login
@@ -39,6 +42,9 @@ ExecStart=/home/ashish/.scripts/iiserlogin.sh
 ```
 
 ## NetworkManager dispatcher script
+
+`/etc/NetworkManager/dispatcher.d/01-iiserlogin.sh`
+
 
 ```
 #!/bin/sh
