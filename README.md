@@ -35,7 +35,7 @@ ExecStart=/home/ashish/.scripts/iiserlogin.sh
 
 ```
 
-## NetwormManager dispatcher script
+## NetworkManager dispatcher script
 
 ```
 #!/bin/sh
