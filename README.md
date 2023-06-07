@@ -60,3 +60,5 @@ case "$interface" in
 esac
 
 ```
+(`eno1` and `wlps5s0` are the interface names of my ethernet and wifi devices
+[run `nmcli`].)
