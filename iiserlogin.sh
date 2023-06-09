@@ -1,9 +1,8 @@
 #!/bin/sh
+notify="notify-send -h string:x-canonical-private-synchronous:iiserlogin"
 
 username="iiser.login"
 password="wxyz1234"
-
-notify="notify-send -h string:x-canonical-private-synchronous:iiserlogin"
 
 sendloginrequest() {
     curl -m 3 -s -X POST -d "mode=191&username=$username&password=$password&a=$(date +%s)000&producttype=1" http://192.168.1.3:8090/login.xml

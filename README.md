@@ -40,6 +40,7 @@ Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
 ExecStart=/home/ashish/.scripts/iiserlogin.sh
 
 ```
+([`/home/ashish/.scripts/iiserlogin.sh`](https://github.com/ashish-yadav11/dotfiles/blob/master/scripts/iiserlogin.sh))
 
 ## NetworkManager dispatcher script
 
