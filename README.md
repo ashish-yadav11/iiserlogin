@@ -56,13 +56,12 @@ status="$2"
 case "$interface" in
     eno1)
         nmcli -t device show eno1 |
-         grep -qFm1 "IP4.DOMAIN[1]:iiserpune.ac.in" &&
-            systemctl restart iiserlogin.service
+         grep -qFm1 "GENERAL.CONNECTION:IISER Wired Connection" &&
+            systemctl --no-block restart iiserlogin.service
         ;;
     wlp5s0)
-        [ "$CONNECTION_ID" = Students ] && nmcli -t device show wlp5s0 |
-         grep -qFm1 "IP4.DOMAIN[1]:iiserpune.ac.in" &&
-            systemctl restart iiserlogin.service
+        { [ "$CONNECTION_ID" = Students ] || [ "$CONNECTION_ID" = Guest ] ;} &&
+            systemctl --no-block restart iiserlogin.service
         ;;
 esac
 
