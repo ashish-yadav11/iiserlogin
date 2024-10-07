@@ -5,11 +5,11 @@ username="iiser.login"
 password="wxyz1234"
 
 sendloginrequest() {
-    curl -m 3 -s -X POST -d "mode=191&username=$username&password=$password&a=$(date +%s)000&producttype=1" http://192.168.1.3:8090/login.xml
+    curl -m 3 -s -X POST -d "mode=191&username=$username&password=$password&a=$(date +%s)000&producttype=1" https://firewall.iiserpune.ac.in:8090/login.xml
 }
 
 sendliverequest() {
-    curl -m 3 -s "http://192.168.1.3:8090/live?mode=192&username=$username&a=$(date +%s)000&producttype=1"
+    curl -m 3 -s "https://firewall.iiserpune.ac.in:8090/live?mode=192&username=$username&a=$(date +%s)000&producttype=1"
 }
 
 notconnected() {
