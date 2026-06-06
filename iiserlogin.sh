@@ -7,15 +7,8 @@ password="wxyz1234"
 PRODUCTTYPE=0
 USERAGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100 Safari/537.36"
 
-COOKIEJAR="$(mktemp --tmpdir iiserlogin.XXXXXX)"
-cleanup() {
-    rm -f "$COOKIEJAR"
-    exit
-}
-trap cleanup HUP INT TERM
-
 sendloginrequest() {
-    curl -s -m 3 -c "$COOKIEJAR" -b "$COOKIEJAR" -A "$USERAGENT" -X POST \
+    curl -k -s -m 3 -A "$USERAGENT" -X POST \
         --url "https://firewall.iiserpune.ac.in:8090/login.xml" \
         --data-urlencode "mode=191" \
         --data-urlencode "username=$username" \
@@ -26,7 +19,7 @@ sendloginrequest() {
 
 sendliverequest() {
     lu=$(printf '%s' "$username" | tr '[:upper:]' '[:lower:]')
-    curl -s -m 3 -c "$COOKIEJAR" -b "$COOKIEJAR" -A "$USERAGENT" -G \
+    curl -k -s -m 3 -A "$USERAGENT" -G \
         --url "https://firewall.iiserpune.ac.in:8090/live" \
         --data-urlencode "mode=192" \
         --data-urlencode "username=$lu" \
@@ -34,9 +27,22 @@ sendliverequest() {
         --data-urlencode "producttype=$PRODUCTTYPE"
 }
 
+sendlogoutrequest() {
+    curl -k -s -m 3 -A "$USERAGENT" -X POST \
+        --url "https://firewall.iiserpune.ac.in:8090/logout.xml" \
+        --data-urlencode "mode=193" \
+        --data-urlencode "username=$username" \
+        --data-urlencode "a=$(date +%s)000" \
+        --data-urlencode "producttype=$PRODUCTTYPE"
+}
+if [ "$1" = logout ] ; then
+    sendlogoutrequest
+    exit
+fi
+
 notconnected() {
     $notify -h int:transient:1 -t 2000 "Not connected to IISER network"
-    cleanup
+    exit
 }
 
 loginsuccess() {
@@ -45,7 +51,7 @@ loginsuccess() {
 
 loginfailed() {
     $notify -t 4000 -u critical "Could not log into IISER captive portal"
-    cleanup
+    exit
 }
 
 output="$(sendloginrequest)" || notconnected
@@ -57,10 +63,11 @@ fi
 
 while true ; do
     output="$(sendliverequest)" || break
-    printf '%s' "$output" | grep -qFm1 "<ack><![CDATA[live_off]]></ack>" && break
-    printf '%s' "$output" | grep -qFm1 "<ack><![CDATA[ack]]></ack>" && continue
+    printf '%s' "$output" | grep -qFm1 "<ack><![CDATA[live_off]]></ack>" && exit
+    if printf '%s' "$output" | grep -qFm1 "<ack><![CDATA[ack]]></ack>" ; then
+        sleep 180
+        continue
+    fi
     output="$(sendloginrequest)" || break
     printf '%s' "$output" | grep -qvF "Login failed" || loginfailed
-    sleep 180
 done
-cleanup

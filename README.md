@@ -1,6 +1,7 @@
 # iiserlogin.sh
 
-Shell script to log in to IISER Captive Portal.
+Shell script to log in to IISER Captive Portal. (Run with the argument `logout`
+to log out from the Portal. Otherwise the script logs you in.)
 
 # Configuration
 
