@@ -1,21 +1,29 @@
 # iiserlogin.sh
 
-Shell script to log in to IISER Captive Portal. (Run with the argument `logout`
-to log out from the Portal. Otherwise the script logs you in.)
+Shell script to log in to IISER Captive Portal.
 
 # Configuration
 
 Set username and password variables in the script, i.e., replace `iiser.login`
-with your actual username and `wxyz1234` with your actual password. Then just
-execute the script. You can also bind the script to some keybinding.
+with your actual username and `wxyz1234` with your actual password. See
+[`iiserlogin.sh`](https://github.com/ashish-yadav11/dotfiles/blob/master/scripts/iiserlogin.sh)
+for my setup using [pass](https://wiki.archlinux.org/title/Pass).
 
-# Technical Point (no one needs to worry about)
+# Usage
 
-Though currently the IISER Captive Portal doesn't require to send live status,
-it can in principle do so. In that case, the program will keep on running in
-the background. Hence it is ideal to run the script through a
-[systemd service](https://wiki.archlinux.org/title/Systemd#Writing_unit_files)
-and just restart the service whenever logging in is required.
+```
+iiserlogin.sh [oneshot|daemon|logout]
+```
+Without any argument, the script attempts to log in to the Portal. It also
+attempts to send live requests every three minutes if the server supports it,
+otherwise it exits. The argument `oneshot` makes the script just log in and
+exit. The argument `daemon` changes the behaviour of the script if the server
+does not support live requests. The script keeps running and re-logins every
+one hour until logging in fails. The argument `logout` logs you out of the
+portal. One might want to invoke the script through a
+[systemd service](https://wiki.archlinux.org/title/Systemd#Writing_unit_files).
+(The IISER Captive Portal doesn't support live requests at the moment, so the
+`oneshot` argument is redundant.)
 
 # Cute Trick
 
@@ -28,42 +36,52 @@ section below).
 
 ## Systemd service
 
-`/etc/systemd/system/iiserlogin.service`
-
+[`/etc/systemd/system/iiserlogin.service`](https://github.com/ashish-yadav11/dotfiles/blob/master/config/root-systemd/system/iiserlogin.service)
 
 ```
 [Unit]
 Description=IISER Captive Portal Login
- 
+
 [Service]
 User=ashish
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
-ExecStart=/home/ashish/.scripts/iiserlogin.sh
+ExecStart=/home/ashish/.scripts/iiserlogin.sh daemon
 
 ```
 ([`/home/ashish/.scripts/iiserlogin.sh`](https://github.com/ashish-yadav11/dotfiles/blob/master/scripts/iiserlogin.sh))
 
 ## NetworkManager dispatcher script
 
-`/etc/NetworkManager/dispatcher.d/01-iiserlogin.sh`
-
+[`/etc/NetworkManager/dispatcher.d/01-iiserlogin.sh`](https://github.com/ashish-yadav11/dotfiles/blob/master/config/root-NetworkManager/dispatcher.d/01-iiserlogin.sh)
 
 ```
 #!/bin/sh
 interface="$1"
 status="$2"
 
-[ "$status" != up ] && exit
-case "$interface" in
-    eno1)
-        nmcli -t device show eno1 |
-         grep -qFm1 "GENERAL.CONNECTION:IISER Wired Connection" &&
-            systemctl --no-block restart iiserlogin.service
-        ;;
-    wlp5s0)
-        { [ "$CONNECTION_ID" = Students ] || [ "$CONNECTION_ID" = Guest ] ;} &&
-            systemctl --no-block restart iiserlogin.service
-        ;;
+case "$status" in
+
+up)
+    case "$interface" in
+        eno1)
+            nmcli -t device show eno1 |
+                grep -qFm1 "GENERAL.CONNECTION:IISER Wired Connection" &&
+                    { systemctl --no-block restart iiserlogin.service; exit ;}
+            ;;
+        wlp5s0)
+            { [ "$CONNECTION_ID" = Students ] || [ "$CONNECTION_ID" = Guest ] ;} &&
+                    { systemctl --no-block restart iiserlogin.service; exit ;}
+            ;;
+    esac
+    nmcli -t device show | grep -qFm1 "iiserpune.ac.in" ||
+        systemctl --no-block stop iiserlogin.service
+    ;;
+
+down)
+    nmcli -t device show | grep -qFm1 "iiserpune.ac.in" ||
+        systemctl --no-block stop iiserlogin.service
+    ;;
+
 esac
 
 ```

@@ -1,6 +1,9 @@
 #!/bin/dash
 notify="notify-send -h string:x-canonical-private-synchronous:iiserlogin"
 
+livedt=180
+brutedt=3600
+
 username="iiser.login"
 password="wxyz1234"
 
@@ -35,7 +38,7 @@ sendlogoutrequest() {
         --data-urlencode "a=$(date +%s)000" \
         --data-urlencode "producttype=$PRODUCTTYPE"
 }
-if [ "$1" = logout ] ; then
+if [ "$1" = "logout" ] ; then
     sendlogoutrequest
     exit
 fi
@@ -60,12 +63,20 @@ if printf '%s' "$output" | grep -qvF "Login failed" ; then
 else
     loginfailed
 fi
+[ "$1" = "oneshot" ] && exit
 
 while true ; do
     output="$(sendliverequest)" || break
-    printf '%s' "$output" | grep -qFm1 "<ack><![CDATA[live_off]]></ack>" && exit
+    if printf '%s' "$output" | grep -qFm1 "<ack><![CDATA[live_off]]></ack>" ; then
+        [ "$1" != "daemon" ] && exit
+        while true ; do
+            sleep "$brutedt"
+            output="$(sendloginrequest)" || exit
+            printf '%s' "$output" | grep -qvF "Login failed" || exit
+        done
+    fi
     if printf '%s' "$output" | grep -qFm1 "<ack><![CDATA[ack]]></ack>" ; then
-        sleep 180
+        sleep "$livedt"
         continue
     fi
     output="$(sendloginrequest)" || break
