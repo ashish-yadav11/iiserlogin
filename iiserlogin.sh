@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 notify="notify-send -h string:x-canonical-private-synchronous:iiserlogin"
 
 livedt=180
