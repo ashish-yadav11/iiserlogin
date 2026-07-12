@@ -95,10 +95,14 @@ while true ; do
                 # wait for network inactivity (logging out is intrusive)
                 IFS='' read -r rx1 <"/sys/class/net/$iface/statistics/rx_bytes"
                 IFS='' read -r tx1 <"/sys/class/net/$iface/statistics/tx_bytes"
-                sleep 4
+                sleep 3
                 IFS='' read -r rx2 <"/sys/class/net/$iface/statistics/rx_bytes"
                 IFS='' read -r tx2 <"/sys/class/net/$iface/statistics/tx_bytes"
-                [ "$(( rx2 - rx1 + tx2 - tx1 ))" -lt 2000 ] && { lo=1; break ;}
+                sleep 1
+                IFS='' read -r rx3 <"/sys/class/net/$iface/statistics/rx_bytes"
+                IFS='' read -r tx3 <"/sys/class/net/$iface/statistics/tx_bytes"
+                [ "$(( rx3 - rx1 + tx3 - tx1 ))" -lt 2000 ] &&
+                    [ "$(( rx3 - rx2 + tx3 - tx2 ))" -lt 500 ] && { lo=1; break ;}
             done
             [ "$lo" = 1 ] && sendlogoutrequest >/dev/null 2>&1
             output="$(sendloginrequest)" || exit
