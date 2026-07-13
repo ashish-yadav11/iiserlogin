@@ -19,8 +19,11 @@ attempts to send live requests every three minutes if the server supports it,
 otherwise it exits. The argument `oneshot` makes the script just log in and
 exit. The argument `daemon` changes the behaviour of the script if the server
 does not support live requests. The script keeps running and re-logins every
-one hour until logging in fails. The argument `logout` logs you out of the
-portal. One might want to invoke the script through a
+two hours until logging in fails (It logs you out first, after ensuring network
+activity is idle, then instantly logs you in. This resets the automatic log out
+time. Presumably just logging in repeatedly doesn't reset the automatic log out
+time). The argument `logout` logs you out of the portal. One might want to
+invoke the script through a
 [systemd service](https://wiki.archlinux.org/title/Systemd#Writing_unit_files).
 (The IISER Captive Portal doesn't support live requests at the moment, so the
 `oneshot` argument is redundant.)
