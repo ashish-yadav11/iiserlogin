@@ -101,8 +101,8 @@ while true ; do
                 sleep 1
                 IFS='' read -r rx3 <"/sys/class/net/$iface/statistics/rx_bytes"
                 IFS='' read -r tx3 <"/sys/class/net/$iface/statistics/tx_bytes"
-                [ "$(( rx3 - rx1 + tx3 - tx1 ))" -lt 2000 ] &&
-                    [ "$(( rx3 - rx2 + tx3 - tx2 ))" -lt 500 ] && { lo=1; break ;}
+                [ "$(( rx3 - rx1 + tx3 - tx1 ))" -le 2048 ] &&
+                    [ "$(( rx3 - rx2 + tx3 - tx2 ))" -le 512 ] && { lo=1; break ;}
             done
             [ "$lo" = 1 ] && sendlogoutrequest >/dev/null 2>&1
             output="$(sendloginrequest)" || exit
