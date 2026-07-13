@@ -40,14 +40,14 @@ sendlogoutrequest() {
         --data-urlencode "producttype=$PRODUCTTYPE"
 }
 
-notconnected() {
+notconnectedexit() {
     $notify -h int:transient:1 -t 2000 "Not connected to IISER network"
     exit
 }
 loginsuccess() {
     $notify -h int:transient:1 -t 2000 "Successfully logged into IISER captive portal"
 }
-loginfailed() {
+loginfailedexit() {
     $notify -t 4000 -u critical "Could not log into IISER captive portal"
     exit
 }
@@ -59,7 +59,7 @@ logoutfailed() {
 }
 
 if [ "$1" = "logout" ] ; then
-    output="$(sendlogoutrequest)" || notconnected
+    output="$(sendlogoutrequest)" || notconnectedexit
     if printf '%s' "$output" | grep -qFm1 "You&#39;ve signed out" ; then
         logoutsuccess
     else
@@ -70,11 +70,11 @@ fi
 
 # log out first to hopefully reset automatic logout time
 [ "$1" = "daemon" ] && sendlogoutrequest >/dev/null 2>&1
-output="$(sendloginrequest)" || notconnected
+output="$(sendloginrequest)" || notconnectedexit
 if printf '%s' "$output" | grep -qvFm1 "Login failed" ; then
     loginsuccess
 else
-    loginfailed
+    loginfailedexit
 fi
 [ "$1" = "oneshot" ] && exit
 
@@ -114,5 +114,5 @@ while true ; do
         continue
     fi
     output="$(sendloginrequest)" || break
-    printf '%s' "$output" | grep -qvFm1 "Login failed" || loginfailed
+    printf '%s' "$output" | grep -qvFm1 "Login failed" || loginfailedexit
 done
