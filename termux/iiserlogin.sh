@@ -16,7 +16,6 @@ sendloginrequest() {
         --data-urlencode "a=$(date +%s)000" \
         --data-urlencode "producttype=$PRODUCTTYPE"
 }
-
 sendlogoutrequest() {
     curl -k -s -m 3 -A "$USERAGENT" -X POST \
         --url "$captiveportalsite/logout.xml" \
@@ -30,7 +29,6 @@ notconnectedexit() {
     termux-notification -t "IISER Captive Portal" -c "Not connected to IISER network"
     exit
 }
-
 loginfailed() {
     termux-notification -t "IISER Captive Portal" -c "Could not log into IISER captive portal"
 }

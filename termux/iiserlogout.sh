@@ -20,7 +20,6 @@ notconnectedexit() {
     termux-notification -t "IISER Captive Portal" -c "Not connected to IISER network"
     exit
 }
-
 logoutfailed() {
     termux-notification -t "IISER Captive Portal" -c "Could not log out of IISER captive portal"
 }
