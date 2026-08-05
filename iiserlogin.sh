@@ -68,7 +68,7 @@ if [ "$1" = "logout" ] ; then
     exit
 fi
 
-# log out first to hopefully reset automatic logout time
+# log out first to reset automatic logout time
 [ "$1" = "daemon" ] && sendlogoutrequest >/dev/null 2>&1
 output="$(sendloginrequest)" || notconnectedexit
 if printf '%s' "$output" | grep -qvFm1 "Login failed" ; then
