@@ -16,9 +16,9 @@ cd iiserlogin/termux
 ```
 Then run
 ```
-./install.sh username password
+./install.sh 'username' 'password'
 ```
-with your credentials.
+with your credentials (inside the quotes).
 Run
 ```
 adb shell settings put global captive_portal_mode 0

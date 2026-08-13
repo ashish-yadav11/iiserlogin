@@ -2,7 +2,8 @@
 if [ -n "$1" ] && [ -n "$2" ] ; then
     printf '%s %s' "$1" "$2" >~/iisercreds.txt
 else
-    cp iisercreds.txt ~/iisercreds.txt
+    echo "Usage: ./install.sh 'username' 'password'"
+    exit
 fi
 cp iiserlogin-job.sh ~/iiserlogin-job.sh
 mkdir -p ~/.shortcuts/tasks/
