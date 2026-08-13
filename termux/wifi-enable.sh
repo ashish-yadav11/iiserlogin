@@ -12,4 +12,3 @@ while ! connected ; do
     [ "$(date +%s)" -gt "$(( t0 + 15 ))" ] && exit
 done
 ~/.shortcuts/tasks/iiserlogin.sh
-termux-job-scheduler --script ~/iiserlogin-job.sh --job-id 11621 --period-ms 7200000 --persisted true

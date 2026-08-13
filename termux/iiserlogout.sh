@@ -1,6 +1,5 @@
 #!/bin/sh
-username="iiser.login"
-password="wxyz1234"
+read -r username password <~/iisercreds.txt
 
 captiveportalsite="https://firewall.iiserpune.ac.in:8090"
 
@@ -20,9 +19,11 @@ notconnectedexit() {
     termux-notification -t "IISER Captive Portal" -c "Not connected to IISER network"
     exit
 }
-logoutfailed() {
+logoutfailedexit() {
     termux-notification -t "IISER Captive Portal" -c "Could not log out of IISER captive portal"
+    exit
 }
 
+termux-job-scheduler --cancel --job-id 11621
 output="$(sendlogoutrequest)" || notconnectedexit
-printf '%s' "$output" | grep -qFm1 "You&#39;ve signed out" || logoutfailed
+printf '%s' "$output" | grep -qFm1 "You&#39;ve signed out" || logoutfailedexit

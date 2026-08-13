@@ -1,8 +1,7 @@
 #!/bin/sh
 termux-wifi-connectioninfo | grep -qF '"ssid": "Students",' || exit
 
-username="iiser.login"
-password="wxyz1234"
+read -r username password <~/iisercreds.txt
 
 captiveportalsite="https://firewall.iiserpune.ac.in:8090"
 
