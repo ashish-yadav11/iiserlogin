@@ -11,3 +11,5 @@ cp iiserlogin.sh ~/.shortcuts/tasks/iiserlogin
 cp iiserlogout.sh ~/.shortcuts/tasks/iiserlogout
 cp wifi-enable.sh ~/.shortcuts/tasks/wifi-enable
 cp wifi-disable.sh ~/.shortcuts/tasks/wifi-disable
+ln -s ~/.shortcuts/tasks/iiserlogin /data/data/com.termux/files/usr/bin/
+ln -s ~/.shortcuts/tasks/iiserlogout /data/data/com.termux/files/usr/bin/
