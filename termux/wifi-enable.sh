@@ -11,4 +11,4 @@ while ! connected ; do
     sleep 1
     [ "$(date +%s)" -gt "$(( t0 + 15 ))" ] && exit
 done
-~/.shortcuts/tasks/iiserlogin.sh
+~/.shortcuts/tasks/iiserlogin
