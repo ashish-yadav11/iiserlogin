@@ -26,4 +26,4 @@ sendlogoutrequest() {
         --data-urlencode "producttype=$PRODUCTTYPE"
 }
 
-sendlogoutrequest && sendloginrequest >/dev/null 2>&1
+{ sendlogoutrequest && sendloginrequest ;} >/dev/null 2>&1
