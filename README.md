@@ -2,6 +2,21 @@
 
 Shell script to log in to IISER Captive Portal.
 
+# The curl request commands for reference
+
+For logging in:
+
+```
+curl -k -m 3 -X POST --url "https://firewall.iiserpune.ac.in:8090/login.xml" --data-urlencode "mode=191" --data-urlencode "username=iiser.login" --data-urlencode "password=wxyz1234"
+```
+
+For logging out:
+```
+curl -k -m 3 -X POST --url "https://firewall.iiserpune.ac.in:8090/logout.xml" --data-urlencode "mode=193" --data-urlencode "username=iiser.login"
+```
+
+These should work on Windows and Mac as well.
+
 # Configuration
 
 Set username and password variables in the script, i.e., replace `iiser.login`
